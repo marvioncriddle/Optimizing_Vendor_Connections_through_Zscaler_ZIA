@@ -38,31 +38,21 @@
 8. Final Implementation:  Added all vendor domains to Zscaler ZIA and removed the previous SSL bypass entries, ensuring that we presented our organization's public IP instead of a Zscaler IP.  This change allowed successful connections while maintaining security.
 9. Testing Confirmation:  Conducted final tests on the application, which were successful.  The entire process, including necessary approvals and change controls, took about a month.
 
-
-
-
-
-
-
-
-
-
-
-
-**Challenges Faced**:  Discovered that MDE required careful management alongside other security solutions to avoid performance impacts.  
+**Challenges Faced**:  The broad wildcard domain (*.s3.amazonaws.com) requested by the vendor posed a significant security risk, as it would allow unrestricted access to a wide range of AWS services.  Additionally, balancing the need for the vendor's application to function while maintaining our organization's security posture required careful analysis.  The SSL handshake failures due to Zscaler's traffic inspection added complexity, and coordinating with the vendor to provide more specific domains took time.  Ensuring a seamless transition to Source IP Anchoring while meeting security and compliance standards, such as NIST 800-53, further challenged the implementation.
 
 ## Results
-- **Outcomes**:  Successfully deployed MDE alongside existing security tools, leveraging vulnerability data to enhance security posture.  
-- **Impact**:  Created a process to monitor devices for Zscaler installation and initiated a monthly vulnerability report for tracking software updates and configurations.  
+- **Outcomes**:  Successfully implemented Source IP Anchoring for the vendor's application, ensuring secure and seamless connections while maintaining Zscaler traffic inspection.
+- **Impact**:  Enhanced the organization's security posture by eliminating the need for an SSL bypass, adhering to NIST 800-53 Rev 5 guidelines, and ensuring secure
 
 ## Lessons Learned
-- Recognized the importance of thorough testing and collaboration among security tools to avoid conflicts.  
-- Gained valuable insights into managing multiple security solutions effectively.  
+- **Departmental Education**:  Ensuring department heads and end-users are more aware of security protocols and potential solutions can help mitigate issues earlier in the process, streamlining troubleshooting and reducing time spent on reactive measures.
+- **Proper Use of Zscaler Controls**:  Instead of temporarily disabling Zscaler, signing out of the tool during troubleshooting would reinforce proper usage and prevent end users from inadvertently learning how to bypass security controls.  This approach ensures continued adherence to security protocols without introducing unnecessary risks.
 
 ## Conclusion
 - By prioritizing source IP anchoring over SSL bypassing, I better aligned our security practices with NIST SP 800-53 Rev 5 controls that advocate for robust access control, monitoring, and data protection.  This approach not only strengthens our security posture but also demonstrates compliance with federal standards for information security.
 
 ### References
+-
 - [Set up Microsoft Defender for Endpoint deployment](https://learn.microsoft.com/en-us/defender-endpoint/production-deployment)
 - [Microsoft Defender Antivirus compatibility with other security products](https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-compatibility)
 - [Reference: Endpoint security exclusions](https://help.tanium.com/bundle/ug_client_cloud/page/client/security_exclusions.html)
