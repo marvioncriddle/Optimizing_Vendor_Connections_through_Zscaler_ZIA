@@ -23,22 +23,23 @@
 - The organization needed to connect securely to a vendor's application but encountered a problem when a service ticket requested whitelisting of the vendor’s domains in Zscaler ZIA.  Despite no blocks in Zscaler logs, the vendor provided broad domain requests, prompting the need for a solution that adhered to security protocols
 
 ## Approach
-- **Research and Analysis**:  Conducted a detailed analysis of the user's machine, the application, and Splunk logs, while reviewing Zscaler documentation to assess our security posture regarding the connection request.
+- **Research and Analysis**:  Conducted a detailed analysis of the user's machine, the application, and Splunk logs, while reviewing Zscaler documentation.
 - **Methodology**:  Worked closely with the requesting user and the vendor to clarify connection requirements and gather specific domain information.  Developed a systematic approach for testing the connection.  
-- **Tools and Technologies**:  Utilized Zscaler Internet Access (ZIA) for traffic filtering and Zscaler Private Access (ZPA) for secure application access, analyzed connection issues through Splunk logs, and consulted Zscaler documentation for configuration guidance while collaborating with the vendor via video conferencing and email.
+- **Tools and Technologies**:  Utilized Zscaler Internet Access (ZIA) for traffic filtering and Zscaler Private Access (ZPA) for secure application access, analyzed connection issues through Splunk logs, analyzed PCAP files with Wireshark. 
 
 ## Implementation
 **Steps Taken**:
-1. Initial Investigation:  Checked Splunk logs for the vendor's domain and found no blocks by Zscaler; all connections were allowed.  The second domain had a wildcard: *.s3.amazonaws.com, which posed significant security risks.
+1. Initial Investigation:  Checked Splunk logs for the vendor's domain and found no blocks by Zscaler; all connections were allowed.  The second domain had a wildcard: *.s3.amazonaws.com, which posed significant security risks by granting overly broad access to AWS services.
 2. User Meeting:  Requested a meeting with the vendor to clarify specific domains.
 3. Testing Session:  Scheduled a day for testing with the vendor and involved coworkers.  During the testing, the connection failed with Zscaler enabled but was successful when Zscaler was temporarily disabled.
-4. Log Analysis:  Pulled up Splunk logs and identified that Zscaler blocked the connection due to a dropped SSL handshake.  This was because Zscaler was acting as a man-in-the-middle, interrupting the certificate pinning process enforced by the vendor's application, which led to connection failures.
-5. SSL Bypass & Certificate Pinning Issue:  To resolve the dropped SSL handshake caused by Zscaler's inspection, we implemented an SSL bypass for the vendor’s specific domains.  The vendor's application used certificate pinning, ensuring it only accepted specific certificates.  Zscaler's interruption of this pinning process prevented successful SSL handshakes, which was confirmed through packet captures analyzed in Wireshark.
-6.  Domain Whitelisting:  Entered the first domain provided by the vendor and re-enabled Zscaler.  The connection test was successful.
-7.  Ongoing Connection Issues:  After some time, another connection error occurred, this time linked to one of the AWS domains.  Added the long list of AWS domains to the SSL Bypass.  The connection was then successful.
-8.  Introducing Source IP Anchoring:  Educated the vendor about Zscaler's ZPA and source IP anchoring.  Submitted our public IP ranges to the vendor's firewall team, who agreed to whitelist them.
-9.  Final Implementation:  Added all vendor domains to Zscaler ZIA and removed the previous SSL bypass entries, ensuring that we presented our organization's public IP instead of a Zscaler IP.  This change allowed successful connections while maintaining security.
-10.  Testing Confirmation:  Conducted final tests on the application, which were successful.  The entire process, including necessary approvals and change controls, took about a month.
+4. Log Analysis:  Pulled up Splunk logs and identified that Zscaler blocked the connection due to a dropped SSL handshake.  Suspected the failed handshake and subsequent dropped connection was due to Zscaler's role as a man-in-the-middle, disrupting the pinning process required by the vendor's application.
+5. Domain Whitelisting:  As a troubleshooting step, entered the first domain into ZIA's SSL Bypass list and re-enabled Zscaler.  This resolution would resolve both certificate and IP pinning issues.  The connection test was successful.
+6. Ongoing Connection Issues:  After some time, another connection error occurred, this time linked to one of the AWS domains.  Added the long list of AWS domains to the SSL Bypass.  The connection was then successful.
+7. Wireshark Analysis:  Removed all the domains from the SSL Bypass, then captured and analyzed packets to determine the failure point.  Wireshark revealed that the connection dropped due to IP pinning, not certificate pinning.  
+8. IP Pinning:  In the PCAP file, Wireshark revealed that the connection began with one Zscaler proxy IP, but midway through the session, the IP switched to a different Zscaler proxy.  This violated the vendor's IP pinning requirement, leading to the termination of the connection, as seen by the RST (Reset) packets from the vendor server.  This confirmed the issue was due to IP pinning, not certificate pinning.
+9. Introducing Source IP Anchoring:  Educated the vendor about Zscaler's ZPA and source IP anchoring and asked analyst to confirm with his firewall admins whether or not they required our public IP ranges for consistent communication with their application.
+10. Final Implementation:  Removed previous SSL bypass entries, adding them to ZPA instead, preserving Zscaler’s traffic inspection while ensuring successful connections with the vendor.Added all vend
+11. Testing Confirmation:  Conducted final tests on the application, which were successful.  The entire process, including necessary approvals and change controls, took about a month.
 
 **Challenges Faced**:  The broad wildcard domain (*.s3.amazonaws.com) requested by the vendor posed a significant security risk, allowing unrestricted access to a wide range of AWS services.  Additionally, Zscaler's role as a man-in-the-middle disrupted the SSL handshake by interrupting the certificate pinning process, complicating the connection.  While implementing an SSL bypass for specific domains was suggested by Zscaler's documentation, it primarily addressed Zscaler Internet Access (ZIA) and did not account for Zscaler Private Access (ZPA).  Coordinating with the vendor to provide more specific domains and adjusting the configuration to utilize Source IP Anchoring further ensured a secure connection without compromising security protocols.
 
@@ -51,10 +52,11 @@
 - **Proper Use of Zscaler Controls**:  Instead of temporarily disabling Zscaler, signing out of the tool during troubleshooting would reinforce proper usage and prevent end users from inadvertently learning how to bypass security controls.  This approach ensures continued adherence to security protocols without introducing unnecessary risks.
 
 ## Conclusion
-- By prioritizing source IP anchoring over SSL bypassing, I better aligned our security practices with NIST SP 800-53 Rev 5 controls that advocate for robust access control, monitoring, and data protection.  This approach not only strengthened our security posture but also demonstrated compliance with federal standards for information security.
+- By prioritizing source IP anchoring over SSL bypassing, I better aligned our security practices with NIST SP 800-53 Rev 5 controls that advocate for robust access control, monitoring, and data protection.  This approach not only upheld our security posture but also demonstrated compliance with federal standards for information security.
 
 ### References
 - [ZIA SSL Inspection Leading Practices Guide](https://help.zscaler.com/zscaler-deployments-operations/zia-ssl-inspection-leading-practices-guide)
+- [Configuring Source IP Anchoring](https://help.zscaler.com/zia/configuring-source-ip-anchoring)
 - [Certificate Pinning and SSL Inspection](https://help.zscaler.com/zia/certificate-pinning-and-ssl-inspection)
 - [NIST SP 800-53 Rev. 5:  Security and Privacy Controls for Information Systems and Organizations](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)
     - #### Relevant NIST SP 800-53 Rev 5 Controls
