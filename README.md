@@ -57,13 +57,13 @@
 - [Certificate Pinning and SSL Inspection](https://help.zscaler.com/zia/certificate-pinning-and-ssl-inspection)
 - [NIST SP 800-53 Rev. 5:  Security and Privacy Controls for Information Systems and Organizations](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)
     - ### Relevant NIST SP 800-53 Rev 5 Controls
-      - ## AC-17: Remote Access
-        This control highlights the importance of secure remote access to organizational systems.  By implementing source IP anchoring, you can enforce stricter access controls, ensuring that only authorized users from specific IP ranges can access vendor services.
+      - #### AC-17: Remote Access
+          - This control highlights the importance of secure remote access to organizational systems.  By implementing source IP anchoring, you can enforce stricter access controls, ensuring that only authorized users from specific IP ranges can access vendor services.
       - #### SC-12: Cryptographic Key Establishment and Management
-        While this control focuses on encryption, the principle of maintaining secure communications is essential.  By avoiding broad SSL bypasses, you ensure that encryption is properly enforced, thereby reducing the risk of data exposure.
+          - While this control focuses on encryption, the principle of maintaining secure communications is essential.  By avoiding broad SSL bypasses, you ensure that encryption is properly enforced, thereby reducing the risk of data exposure.
       - #### SC-28: Protection of Information at Rest and in Transmission
-      This control emphasizes the necessity of protecting data both in transit and at rest.  By utilizing source IP anchoring, you ensure that traffic to and from the vendor is inspected for malicious activity, preserving the integrity and confidentiality of sensitive information.
+          - This control emphasizes the necessity of protecting data both in transit and at rest.  By utilizing source IP anchoring, you ensure that traffic to and from the vendor is inspected for malicious activity, preserving the integrity and confidentiality of sensitive information.
       - #### SI-4: Information System Monitoring
-      Effective monitoring is vital for detecting anomalies and ensuring compliance.  By allowing Zscaler to inspect traffic instead of bypassing it entirely, you enhance your capability to monitor for malicious activity, in line with the monitoring requirements outlined in this control.
-    - #### RA-5: Vulnerability Scanning
-    This control stresses the need for regular scanning to identify vulnerabilities.  Maintaining traffic inspection through Zscaler ensures that any threats can be detected and addressed before they exploit vulnerabilities within your systems.
+          - Effective monitoring is vital for detecting anomalies and ensuring compliance.  By allowing Zscaler to inspect traffic instead of bypassing it entirely, you enhance your capability to monitor for malicious activity, in line with the monitoring requirements outlined in this control.
+      - #### RA-5: Vulnerability Scanning
+          - This control stresses the need for regular scanning to identify vulnerabilities.  Maintaining traffic inspection through Zscaler ensures that any threats can be detected and addressed before they exploit vulnerabilities within your systems.
