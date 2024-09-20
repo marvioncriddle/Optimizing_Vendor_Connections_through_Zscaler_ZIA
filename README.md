@@ -3,36 +3,51 @@
 ## Overview:
 </br>
 
-<img align="left" alt="Portfolio Logo" width="300px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyMk6xX2_L1CvEBpw6xu1ipeeYuMHeE8R6jg&s" />
+<img align="left" alt="Portfolio Logo" width="200px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyMk6xX2_L1CvEBpw6xu1ipeeYuMHeE8R6jg&s" />
 </br>
 
-- **Position**:  Information Security Analyst, Subject Matter Expert (SME)
-- **Timeframe**:  Six months
-- **Objective**:  Successfully deploy Microsoft Defender for Endpoint (MDE) as a prerequisite for implementing Microsoft Purview Data Loss Prevention (DLP).  
+- **Position**:  Information Security Analyst, Subject Matter Expert (SME)  
+- **Timeframe**:  One month  
+- **Objective**:  Optimize vendor connections while maintaining a strong security posture by utilizing source IP anchoring. 
 </br>
 </br>
 </br>
 
 
 ## Background
-- **Context**:  As part of the Security Engineering and Architecture Team within the Information Security Office (ISO), we aimed to enhance our security posture through effective DLP solutions.  
-- **Stakeholders**:  Involved directors, the Chief Information Security Officer (CISO), Chief Technology Officer (CTO), and desktop support teams.  
+- **Context**:  A user submitted a service ticket requesting that we whitelist a new vendor's domains in Zscaler ZIA.  It was assumed that Zscaler was blocking the connection.  
+- **Stakeholders**:  InfoSec Team, New Vendor's Technical Team, Requesting Department, Compliance Team, Zscaler
 
 ## Problem Statement
-- The organization needed a robust DLP solution, and the existing contract with Symantec DLP was nearing its end.  The decision was made to transition to Microsoft Purview, leveraging our ongoing Microsoft contract for better support and pricing.  
+- The organization needed to connect securely to a vendor's application but encountered a problem when a service ticket requested whitelisting of the vendor’s domains in Zscaler ZIA.  Despite no blocks in Zscaler logs, the vendor provided broad domain requests, prompting the need for a solution that adhered to security protocols
 
 ## Approach
-- **Research and Analysis**:  Conducted thorough research using Microsoft Learn to familiarize ourselves with MDE functionalities and requirements.  
-- **Methodology**:  Collaborated with desktop support teams to formulate a comprehensive deployment plan for MDE.  
-- **Tools and Technologies**:  Utilized Microsoft Defender for Endpoint, BigFix for deployment, PowerShell scripts for testing and deployment, and MDE Dashboards and KQL for analysis.  
+- **Research and Analysis**:  Conducted a detailed analysis of the user's machine, the application, and Splunk logs, while reviewing Zscaler documentation to assess our security posture regarding the connection request.
+- **Methodology**:  Worked closely with the requesting user and the vendor to clarify connection requirements and gather specific domain information.  Developed a systematic approach for testing the connection.  
+- **Tools and Technologies**:  Utilized Zscaler Internet Access (ZIA) for traffic filtering and Zscaler Private Access (ZPA) for secure application access, analyzed connection issues through Splunk logs, and consulted Zscaler documentation for configuration guidance while collaborating with the vendor via video conferencing and email.
 
 ## Implementation
 **Steps Taken**:
-1. Generated a deployment script using the MDE portal, selecting configurations that fit our environment.
-2. Enrolled in MDE's EDR Exclusion feature, allowing the team to create exclusion policies with BigFix and other teams, maintaining a separation of duties.
-3. Deployed MDE while ensuring it operated in passive mode to prevent conflicts.
-4. Established exclusion policies to mitigate conflicting scanning issues that initially caused performance bottlenecks.
-5. Observed performance issues during rollout, particularly with the deployment of Tanium for device management, necessitating further analysis.  
+1. Initial Investigation:  Checked Splunk logs for the vendor's domain and found no blocks by Zscaler; all connections were allowed. The second domain had a wildcard: *.s3.amazonaws.com, which posed significant security risks.
+2. User Meeting:  Requested a meeting with the vendor to clarify specific domains.
+3. Testing Session:  Scheduled a day for testing with the vendor and involved coworkers.  During the testing, the connection failed with Zscaler enabled, but was successful when Zscaler was temporarily disabled.
+4. Log Analysis:  Pulled up Splunk logs and identified that Zscaler blocked the connection due to a dropped SSL handshake, indicating a need for an SSL bypass.
+5. Domain Whitelisting: E ntered the first domain provided by the vendor and re-enabled Zscaler.  The connection test was successful.
+6. Ongoing Connection Issues:  After some time, a connection error occurred, this time linked to one of the AWS domains.
+7. Introducing Source IP Anchoring:  Educated the vendor about Zscaler's ZPA and source IP anchoring.  I submitted our public IP ranges to the vendor's firewall team, who agreed to whitelist them.
+8. Final Implementation:  Added all vendor domains to Zscaler ZIA and removed the previous SSL bypass entries, ensuring that we presented our organization's public IP instead of a Zscaler IP.  This change allowed successful connections while maintaining security.
+9. Testing Confirmation:  Conducted final tests on the application, which were successful.  The entire process, including necessary approvals and change controls, took about a month.
+
+
+
+
+
+
+
+
+
+
+
 
 **Challenges Faced**:  Discovered that MDE required careful management alongside other security solutions to avoid performance impacts.  
 
@@ -45,7 +60,7 @@
 - Gained valuable insights into managing multiple security solutions effectively.  
 
 ## Conclusion
-- The deployment of Microsoft Defender for Endpoint not only fulfilled the prerequisite for Microsoft Purview DLP but also provided additional insights to bolster the organization's overall security posture.  
+- By prioritizing source IP anchoring over SSL bypassing, I better aligned our security practices with NIST SP 800-53 Rev 5 controls that advocate for robust access control, monitoring, and data protection.  This approach not only strengthens our security posture but also demonstrates compliance with federal standards for information security.
 
 ### References
 - [Set up Microsoft Defender for Endpoint deployment](https://learn.microsoft.com/en-us/defender-endpoint/production-deployment)
