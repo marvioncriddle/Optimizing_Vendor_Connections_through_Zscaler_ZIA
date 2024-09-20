@@ -14,13 +14,6 @@
 </br>
 </br>
 
-- **Position**:  Information Security Analyst, Subject Matter Expert (SME)  
-- **Timeframe**:  One month  
-- **Objective**:  Optimize vendor connections while maintaining a strong security posture by utilizing source IP anchoring. 
-</br>
-</br>
-</br>
-
 
 ## Background
 - **Context**:  A user submitted a service ticket requesting that we whitelist a new vendor's domains in Zscaler ZIA.  It was assumed that Zscaler was blocking the connection.  
