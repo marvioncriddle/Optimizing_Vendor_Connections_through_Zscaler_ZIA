@@ -66,4 +66,4 @@
       - ##### SI-4: Information System Monitoring
           - Effective monitoring is vital for detecting anomalies and ensuring compliance.  By allowing Zscaler to inspect traffic instead of bypassing it entirely, you enhance your capability to monitor for malicious activity, in line with the monitoring requirements outlined in this control.
       - ##### RA-5: Vulnerability Scanning
-          - This control stresses the need for regular scanning to identify vulnerabilities.  Maintaining traffic inspection through Zscaler ensures that any threats can be detected and addressed before they exploit vulnerabilities within your systems.
+          - This control stresses the need for regular scanning to identify vulnerabilities.  Maintaining traffic inspection through Zscaler ensures that any threats can be detected and addressed before they exploit vulnerabilities within systems.
