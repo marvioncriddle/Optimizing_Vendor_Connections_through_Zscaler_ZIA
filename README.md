@@ -3,7 +3,7 @@
 ## Overview:
 </br>
 
-<img style="float: left; margin-right: 15px; margin-bottom: 15px;" alt="Portfolio Logo" width="200px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyMk6xX2_L1CvEBpw6xu1ipeeYuMHeE8R6jg&s" />
+<img style="float: left; margin-right: 10px; margin-bottom: 10px;" alt="Portfolio Logo" width="200px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyMk6xX2_L1CvEBpw6xu1ipeeYuMHeE8R6jg&s" />
 </br>
 
 - **Position**:  Information Security Analyst, Subject Matter Expert (SME)  
