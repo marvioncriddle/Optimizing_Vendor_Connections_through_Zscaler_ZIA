@@ -1,4 +1,4 @@
-# Case Study:  Optimizing Vendor Connections through Source IP Anchoring
+# Case Study:  Optimizing Vendor Connections through Zscaler ZIA
 
 ## Overview:
 </br>
@@ -8,7 +8,7 @@
 
 - **Position**:  Information Security Analyst, Subject Matter Expert (SME)  
 - **Timeframe**:  One month  
-- **Objective**:  Optimize vendor connections while maintaining a strong security posture by utilizing source IP anchoring. 
+- **Objective**:  Optimize vendor connections while maintaining a strong security posture by utilizing Zscaler, our Secure Web Gateway (SWG). 
 </br>
 </br>
 </br>
@@ -28,29 +28,28 @@
 
 ## Implementation
 **Steps Taken**:
-1. Initial Investigation:  Checked Splunk logs for the vendor's domain and found no blocks by Zscaler; all connections were allowed.  The second domain had a wildcard: *.s3.amazonaws.com, which posed significant security risks.
+1. Initial Investigation:  Checked Splunk logs for the vendor's first domain and found no blocks by Zscaler; all connections were allowed.  The second domain the vendor asked us to whitelist had a wildcard: *.s3.amazonaws.com, which posed significant security risks, as whitelisting this AWS S3 domain would open our SWG up to millions of sites.
 2. User Meeting:  Requested a meeting with the vendor to clarify specific domains.
 3. Testing Session:  Scheduled a day for testing with the vendor and involved coworkers.  During the testing, the connection failed with Zscaler enabled but was successful when Zscaler was temporarily disabled.
 4. Log Analysis:  Pulled up Splunk logs and identified that Zscaler blocked the connection due to a dropped SSL handshake.  This was because Zscaler was acting as a man-in-the-middle, interrupting the certificate pinning process enforced by the vendor's application, which led to connection failures.
 5. SSL Bypass & Certificate Pinning Issue:  To resolve the dropped SSL handshake caused by Zscaler's inspection, we implemented an SSL bypass for the vendor’s specific domains.  The vendor's application used certificate pinning, ensuring it only accepted specific certificates.  Zscaler's interruption of this pinning process prevented successful SSL handshakes, which was confirmed through packet captures analyzed in Wireshark.
 6.  Domain Whitelisting:  Entered the first domain provided by the vendor and re-enabled Zscaler.  The connection test was successful.
-7.  Ongoing Connection Issues:  After some time, a connection error occurred, this time linked to one of the AWS domains.
-8.  Introducing Source IP Anchoring:  Educated the vendor about Zscaler's ZPA and source IP anchoring.  Submitted our public IP ranges to the vendor's firewall team, who agreed to whitelist them.
-9.  Final Implementation:  Added all vendor domains to Zscaler ZIA and removed the previous SSL bypass entries, ensuring that we presented our organization's public IP instead of a Zscaler IP.  This change allowed successful connections while maintaining security.
+7.  Ongoing Connection Issues:  While testing addition features of the application, a connection error occurred, this time linked to one of the AWS S3 domains.
+8.  Final Implementation:  Added full list of specific vendor domains to Zscaler ZIA and removed the previous SSL bypass entries, ensuring that we presented our organization's public IP instead of a Zscaler IP.  This change allowed successful connections while maintaining security.
 10.  Testing Confirmation:  Conducted final tests on the application, which were successful.  The entire process, including necessary approvals and change controls, took about a month.
 
-**Challenges Faced**:  The broad wildcard domain (*.s3.amazonaws.com) requested by the vendor posed a significant security risk, allowing unrestricted access to a wide range of AWS services.  Additionally, Zscaler's role as a man-in-the-middle disrupted the SSL handshake by interrupting the certificate pinning process, complicating the connection.  While implementing an SSL bypass for specific domains was suggested by Zscaler's documentation, it primarily addressed Zscaler Internet Access (ZIA) and did not account for Zscaler Private Access (ZPA).  Coordinating with the vendor to provide more specific domains and adjusting the configuration to utilize Source IP Anchoring further ensured a secure connection without compromising security protocols.
+**Challenges Faced**:  The broad wildcard domain (*.s3.amazonaws.com) requested by the vendor posed a significant security risk, allowing unrestricted access to a wide range of AWS services.  Additionally, Zscaler's role as a man-in-the-middle disrupted the SSL handshake by interrupting the certificate pinning process, complicating the connection.  Coordinating with the vendor to provide more specific domains was critical.  Implementing an SSL bypass for specific domains was suggested by Zscaler's documentation, meaning there would be no deep packet inspection of traffic to its domains. Vendor and website validation was an imperative, along with assuring our EDR's and firewalls were in place as a contigency.   
 
 ## Results
-- **Outcomes**:  Successfully implemented Source IP Anchoring for the vendor's application, ensuring secure and seamless connections while maintaining Zscaler traffic inspection.
-- **Impact**:  Enhanced the organization's security posture by eliminating the need for an SSL bypass, adhering to NIST 800-53 Rev 5 guidelines.
+- **Outcomes**:  Successfully implemented SSL bypass for the vendor's application, ensuring secure and seamless connections while maintaining security posture.
+- **Impact**:  Enhanced the organization's security posture by eliminating the need for an SSL bypass for millions of sites.
 
 ## Lessons Learned
 - **Departmental Education**:  Ensuring department heads and end-users are more aware of security protocols and potential solutions can help mitigate issues earlier in the process, streamlining troubleshooting and reducing time spent on reactive measures.
 - **Proper Use of Zscaler Controls**:  Instead of temporarily disabling Zscaler, signing out of the tool during troubleshooting would reinforce proper usage and prevent end users from inadvertently learning how to bypass security controls.  This approach ensures continued adherence to security protocols without introducing unnecessary risks.
 
 ## Conclusion
-- By prioritizing source IP anchoring over SSL bypassing, I better aligned our security practices with NIST SP 800-53 Rev 5 controls that advocate for robust access control, monitoring, and data protection.  This approach not only strengthened our security posture but also demonstrated compliance with federal standards for information security.
+- Optimizing vendor connections through Zscaler ZIA while maintaining a strong security posture required a systematic approach to troubleshoot connection issues, implement SSL bypass for specific domains, and ensure proper use of security controls. The key challenge was the vendor's request for a broad AWS S3 domain wildcard, which posed a significant risk, but with collaboration and targeted domain whitelisting, the issue was resolved. This case study highlights the importance of clear communication with vendors, the careful configuration of security tools, and the need to balance security with operational efficiency.
 
 ### References
 - [ZIA SSL Inspection Leading Practices Guide](https://help.zscaler.com/zscaler-deployments-operations/zia-ssl-inspection-leading-practices-guide)
