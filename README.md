@@ -3,7 +3,7 @@
 ## Overview:
 </br>
 
-<img align="left" alt="Portfolio Logo" width="200px" src="https://i.imgur.com/YesIrJe.jpg" />
+<img align="left" alt="Portfolio Logo" width="400px" src="https://i.imgur.com/YesIrJe.jpg" />
 </br>
 
 - **Position**:  Information Security Analyst, Subject Matter Expert (SME)  
